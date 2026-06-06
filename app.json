@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "QuizStreet NG",
+    "slug": "quizstreet-ng",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#0A0A0A"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#00C853"
+      },
+      "package": "com.quizstreetng.app"
+    },
+    "plugins": [
+      "expo-sqlite"
+    ]
+  }
+}
