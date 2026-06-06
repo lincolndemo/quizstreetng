@@ -16,7 +16,8 @@
       "package": "com.quizstreetng.app"
     },
     "plugins": [
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-sharing"
     ]
   }
 }

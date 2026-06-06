@@ -128,9 +128,14 @@ export default function ManageScreen({ navigation }) {
           <Text style={styles.backBtn}>‹ Back</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Questions</Text>
-        <TouchableOpacity style={styles.addBtn} onPress={openAdd}>
-          <Text style={styles.addBtnLabel}>+ Add</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity onPress={() => navigation.navigate('Import')} style={styles.importLink}>
+            <Text style={styles.importLinkLabel}>Import</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.addBtn} onPress={openAdd}>
+            <Text style={styles.addBtnLabel}>+ Add</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <FlatList
@@ -164,6 +169,9 @@ const styles = StyleSheet.create({
   },
   backBtn:  { color: C.primary, fontSize: 17 },
   title:    { color: C.text, fontSize: 17, fontWeight: '700' },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  importLink:    { paddingHorizontal: 4 },
+  importLinkLabel: { color: C.textSec, fontSize: 14, fontWeight: '500' },
   addBtn:   { backgroundColor: C.gold, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 7 },
   addBtnLabel: { color: '#0A0A0A', fontSize: 14, fontWeight: '700' },
   listContent: { paddingBottom: 40 },

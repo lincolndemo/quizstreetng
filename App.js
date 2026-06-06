@@ -7,6 +7,7 @@ import { initDatabase, seedDatabase } from './lib/db';
 import HomeScreen from './screens/HomeScreen';
 import QuizScreen from './screens/QuizScreen';
 import ManageScreen from './screens/ManageScreen';
+import ImportScreen from './screens/ImportScreen';
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,7 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Quiz" component={QuizScreen} />
         <Stack.Screen name="Manage" component={ManageScreen} />
+        <Stack.Screen name="Import" component={ImportScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
