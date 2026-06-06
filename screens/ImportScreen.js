@@ -48,7 +48,7 @@ function parseCSV(text) {
   return { valid, errors };
 }
 
-export default function ImportScreen({ navigation }) {
+export default function ImportScreen() {
   const [parsed,    setParsed]    = useState(null);
   const [importing, setImporting] = useState(false);
   const [imported,  setImported]  = useState(null);
@@ -96,11 +96,7 @@ export default function ImportScreen({ navigation }) {
     <SafeAreaView style={s.safe}>
       <StatusBar barStyle="light-content" backgroundColor={C.bg} />
       <View style={s.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{top:12,bottom:12,left:12,right:12}}>
-          <Text style={s.back}>‹ Back</Text>
-        </TouchableOpacity>
         <Text style={s.title}>Import Questions</Text>
-        <View style={{ width: 48 }} />
       </View>
 
       <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>

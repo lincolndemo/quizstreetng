@@ -144,7 +144,7 @@ export default function QuizScreen({ route, navigation }) {
       'End this session and return home?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'End', style: 'destructive', onPress: () => navigation.navigate('Home') },
+        { text: 'End', style: 'destructive', onPress: () => navigation.goBack() },
       ],
     );
   };
@@ -164,7 +164,7 @@ export default function QuizScreen({ route, navigation }) {
       <SessionComplete
         usedCount={usedCount}
         total={index}
-        onHome={() => navigation.navigate('Home')}
+        onHome={() => navigation.goBack()}
       />
     );
   }

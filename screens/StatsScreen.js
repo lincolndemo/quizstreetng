@@ -69,7 +69,7 @@ function CategoryCard({ row, onReset }) {
   );
 }
 
-export default function StatsScreen({ navigation }) {
+export default function StatsScreen() {
   const [stats,   setStats]   = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -101,14 +101,7 @@ export default function StatsScreen({ navigation }) {
       <StatusBar barStyle="light-content" backgroundColor={C.bg} />
 
       <View style={s.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-        >
-          <Text style={s.back}>‹ Back</Text>
-        </TouchableOpacity>
         <Text style={s.title}>Question Bank Stats</Text>
-        <View style={{ width: 48 }} />
       </View>
 
       {loading ? (

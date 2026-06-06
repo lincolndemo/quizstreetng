@@ -121,12 +121,6 @@ export default function ManageScreen({ navigation }) {
       <StatusBar barStyle="light-content" backgroundColor={C.bg} />
 
       <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-        >
-          <Text style={styles.backBtn}>‹ Back</Text>
-        </TouchableOpacity>
         <Text style={styles.title}>Questions</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity onPress={() => navigation.navigate('Import')} style={styles.importLink}>
@@ -167,7 +161,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20, paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.border,
   },
-  backBtn:  { color: C.primary, fontSize: 17 },
   title:    { color: C.text, fontSize: 17, fontWeight: '700' },
   headerActions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   importLink:    { paddingHorizontal: 4 },
