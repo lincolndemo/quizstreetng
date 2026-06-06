@@ -20,7 +20,22 @@
     },
     "plugins": [
       "expo-sqlite",
-      "expo-sharing"
-    ]
+      "expo-sharing",
+      "expo-system-ui",
+      "./plugins/withGradleOverrides",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.9.25"
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "bbbbc3e0-a950-45bf-8b5f-559a20335324"
+      }
+    }
   }
 }
