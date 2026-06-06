@@ -5,7 +5,7 @@ import { CardStyleInterpolators } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import { initDatabase, seedDatabase } from './lib/db';
 import HomeScreen   from './screens/HomeScreen';
 import QuizScreen   from './screens/QuizScreen';
