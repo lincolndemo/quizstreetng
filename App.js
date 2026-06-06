@@ -5,6 +5,7 @@ import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import { initDatabase, seedDatabase } from './lib/db';
 import HomeScreen from './screens/HomeScreen';
+import QuizScreen from './screens/QuizScreen';
 
 const Stack = createStackNavigator();
 
@@ -22,16 +23,6 @@ function ErrorScreen({ message }) {
   return (
     <View style={styles.container}>
       <Text style={styles.errorText}>DB Error: {message}</Text>
-      <StatusBar style="light" />
-    </View>
-  );
-}
-
-// Placeholder until Phase D
-function QuizScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.subtitle}>QuizScreen — Phase D</Text>
       <StatusBar style="light" />
     </View>
   );
