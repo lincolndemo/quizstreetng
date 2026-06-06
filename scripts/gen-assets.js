@@ -1,13 +1,15 @@
 /**
- * Generates assets/icon.png and assets/splash.png with no external dependencies.
+ * Generates assets/icon.png and assets/splash.png
+ * Matches the QuizStreet NG logo: cream bg, QUIZ (black), STREET (orange), NG badge
  * Run: node scripts/gen-assets.js
+ * No external dependencies.
  */
 const zlib = require('zlib');
 const fs   = require('fs');
 const path = require('path');
 
-// ── CRC32 ────────────────────────────────────────────────────────────────────
-const CRC_TABLE = (() => {
+// ── CRC32 ─────────────────────────────────────────────────────────────────────
+const CRC = (() => {
   const t = new Uint32Array(256);
   for (let n = 0; n < 256; n++) {
     let c = n;
@@ -16,126 +18,164 @@ const CRC_TABLE = (() => {
   }
   return t;
 })();
-
 function crc32(buf) {
   let c = 0xFFFFFFFF;
-  for (const b of buf) c = CRC_TABLE[(c ^ b) & 0xFF] ^ (c >>> 8);
+  for (const b of buf) c = CRC[(c ^ b) & 0xFF] ^ (c >>> 8);
   return (c ^ 0xFFFFFFFF) >>> 0;
 }
 
-// ── PNG builder ───────────────────────────────────────────────────────────────
-function pngChunk(type, data) {
-  const lenBuf  = Buffer.alloc(4); lenBuf.writeUInt32BE(data.length);
-  const typeBuf = Buffer.from(type, 'ascii');
-  const crcVal  = crc32(Buffer.concat([typeBuf, data]));
-  const crcBuf  = Buffer.alloc(4); crcBuf.writeUInt32BE(crcVal);
-  return Buffer.concat([lenBuf, typeBuf, data, crcBuf]);
+// ── PNG encoder ────────────────────────────────────────────────────────────────
+function chunk(type, data) {
+  const lb = Buffer.alloc(4); lb.writeUInt32BE(data.length);
+  const tb = Buffer.from(type, 'ascii');
+  const cb = Buffer.alloc(4); cb.writeUInt32BE(crc32(Buffer.concat([tb, data])));
+  return Buffer.concat([lb, tb, data, cb]);
 }
-
-function makePNG(width, height, getPixel) {
-  const sig  = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+function buildPNG(W, H, getPixel) {
+  const sig  = Buffer.from([137,80,78,71,13,10,26,10]);
   const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(width,  0);
-  ihdr.writeUInt32BE(height, 4);
-  ihdr[8] = 8; ihdr[9] = 2; // 8-bit depth, RGB
-
-  // Build raw scanlines (filter byte 0 + RGB per pixel)
-  const stride = 1 + width * 3;
-  const raw    = Buffer.alloc(stride * height, 0);
-  for (let y = 0; y < height; y++) {
-    raw[y * stride] = 0; // filter: None
-    for (let x = 0; x < width; x++) {
-      const [r, g, b] = getPixel(x, y, width, height);
-      const off = y * stride + 1 + x * 3;
-      raw[off] = r; raw[off + 1] = g; raw[off + 2] = b;
+  ihdr.writeUInt32BE(W,0); ihdr.writeUInt32BE(H,4);
+  ihdr[8]=8; ihdr[9]=2; // 8-bit RGB
+  const stride = 1 + W * 3;
+  const raw = Buffer.alloc(stride * H, 0);
+  for (let y = 0; y < H; y++) {
+    raw[y * stride] = 0;
+    for (let x = 0; x < W; x++) {
+      const [r,g,b] = getPixel(x,y);
+      const o = y * stride + 1 + x * 3;
+      raw[o]=r; raw[o+1]=g; raw[o+2]=b;
     }
   }
-
-  const idat = zlib.deflateSync(raw, { level: 6 });
-  return Buffer.concat([
-    sig,
-    pngChunk('IHDR', ihdr),
-    pngChunk('IDAT', idat),
-    pngChunk('IEND', Buffer.alloc(0)),
-  ]);
+  return Buffer.concat([sig, chunk('IHDR',ihdr), chunk('IDAT',zlib.deflateSync(raw,{level:6})), chunk('IEND',Buffer.alloc(0))]);
 }
 
-// ── Simple 5×7 bitmap font for capital letters ───────────────────────────────
-const GLYPHS = {
-  Q: ['01110','10001','10001','10001','10101','01110','00010'],
-  N: ['10001','11001','10101','10011','10001','10001','10001'],
-  u: ['00000','00000','10001','10001','10001','10011','01101'],
-  i: ['00100','00000','01100','00100','00100','00100','01110'],
-  z: ['00000','00000','11111','00010','00100','01000','11111'],
-  S: ['00000','01110','10000','01110','00001','10001','01110'],
-  t: ['01000','01000','11110','01000','01000','01001','00110'],
-  r: ['00000','00000','10110','11001','10000','10000','10000'],
-  e: ['00000','00000','01110','10001','11111','10000','01110'],
+// ── Pixel canvas ───────────────────────────────────────────────────────────────
+function makeCanvas(W, H, fill) {
+  const buf = new Uint8Array(W * H * 3);
+  const [fr,fg,fb] = fill;
+  for (let i = 0; i < buf.length; i += 3) { buf[i]=fr; buf[i+1]=fg; buf[i+2]=fb; }
+  return {
+    W, H, buf,
+    set(x, y, r, g, b) {
+      if (x < 0 || y < 0 || x >= W || y >= H) return;
+      const i=(y*W+x)*3; buf[i]=r; buf[i+1]=g; buf[i+2]=b;
+    },
+    get(x, y) { const i=(y*W+x)*3; return [buf[i],buf[i+1],buf[i+2]]; },
+  };
+}
+
+// ── 5×7 bold bitmap font ───────────────────────────────────────────────────────
+const G = {
+  Q:['01110','11011','10001','10101','11011','01110','00011'],
+  U:['10001','10001','10001','10001','10001','11011','01110'],
+  I:['11111','00100','00100','00100','00100','00100','11111'],
+  Z:['11111','00011','00110','01100','11000','11000','11111'],
+  S:['01111','11000','11000','01110','00011','00011','11110'],
+  T:['11111','11111','00100','00100','00100','00100','00100'],
+  R:['11110','11011','11011','11110','11100','11010','11001'],
+  E:['11111','11000','11000','11110','11000','11000','11111'],
+  N:['10001','11001','11001','10101','10011','10011','10001'],
+  G:['01111','11000','11000','10011','10011','11011','01111'],
   ' ':['00000','00000','00000','00000','00000','00000','00000'],
-  G: ['01110','10001','10000','10111','10001','10001','01110'],
 };
 
-function drawGlyph(pixels, glyph, startX, startY, scale, r, g, b) {
-  const rows = GLYPHS[glyph] ?? GLYPHS[' '];
-  for (let row = 0; row < rows.length; row++) {
-    for (let col = 0; col < rows[row].length; col++) {
-      if (rows[row][col] === '1') {
-        for (let dy = 0; dy < scale; dy++) {
-          for (let dx = 0; dx < scale; dx++) {
-            const px = startX + col * scale + dx;
-            const py = startY + row  * scale + dy;
-            if (px >= 0 && py >= 0 && px < pixels.width && py < pixels.height) {
-              pixels.set(px, py, r, g, b);
-            }
-          }
+function drawText(c, str, startX, startY, scale, r, g, b) {
+  const gap = Math.max(1, Math.floor(scale * 0.28));
+  let x = startX;
+  for (const ch of str.toUpperCase()) {
+    const rows = G[ch] ?? G[' '];
+    for (let row = 0; row < rows.length; row++) {
+      for (let col = 0; col < 5; col++) {
+        if (rows[row][col] === '1') {
+          for (let dy = 0; dy < scale; dy++)
+            for (let dx = 0; dx < scale; dx++)
+              c.set(x + col*scale + dx, startY + row*scale + dy, r, g, b);
         }
       }
     }
+    x += 5*scale + gap;
+  }
+  return x - startX - gap; // actual width drawn
+}
+
+function textW(str, scale) {
+  const gap = Math.max(1, Math.floor(scale * 0.28));
+  return str.length * 5 * scale + (str.length - 1) * gap;
+}
+
+// Filled rounded rectangle
+function fillRRect(c, x, y, w, h, r, R, Gv, B) {
+  for (let py = y; py < y+h; py++) {
+    for (let px = x; px < x+w; px++) {
+      const inX = px >= x+r && px < x+w-r;
+      const inY = py >= y+r && py < y+h-r;
+      if (inX || inY) { c.set(px, py, R, Gv, B); continue; }
+      // corner check
+      const cx = px < x+r ? x+r : x+w-r;
+      const cy = py < y+r ? y+r : y+h-r;
+      if ((px-cx)**2 + (py-cy)**2 <= r*r) c.set(px, py, R, Gv, B);
+    }
   }
 }
 
-// ── Icon: 1024×1024, green bg, "QN" in white ─────────────────────────────────
+// ── Icon: 1024×1024 ────────────────────────────────────────────────────────────
 function makeIcon() {
-  const W = 1024, H = 1024;
-  const buf = new Uint8Array(W * H * 3);
-  const pixels = {
-    width: W, height: H,
-    set(x, y, r, g, b) { const i = (y * W + x) * 3; buf[i]=r; buf[i+1]=g; buf[i+2]=b; },
-    get(x, y) { const i = (y * W + x) * 3; return [buf[i], buf[i+1], buf[i+2]]; },
-  };
+  const W=1024, H=1024;
+  const c = makeCanvas(W, H, [0xED,0xE0,0xC4]); // warm cream
 
-  // Fill green
-  buf.fill(0);
-  for (let i = 0; i < buf.length; i += 3) { buf[i] = 0x00; buf[i+1] = 0xC8; buf[i+2] = 0x53; }
+  // ── QUIZ (black, scale 40) ─────────────────────────────
+  const qs=40;
+  const qx = Math.floor((W - textW('QUIZ',qs)) / 2);
+  drawText(c, 'QUIZ', qx, 110, qs, 0x18,0x18,0x18);
 
-  // Draw "QN" centred — glyph is 5×7, scale=80 → 400×560 per char, gap=40
-  const scale = 80, gap = 60;
-  const charW = 5 * scale, charH = 7 * scale;
-  const totalW = charW * 2 + gap;
-  const startX = Math.floor((W - totalW) / 2);
-  const startY = Math.floor((H - charH) / 2);
+  // ── STREET (deep orange, scale 28) ────────────────────
+  const ss=28;
+  const sx = Math.floor((W - textW('STREET',ss)) / 2);
+  drawText(c, 'STREET', sx, 110 + 7*qs + 44, ss, 0xCC,0x55,0x22);
 
-  drawGlyph(pixels, 'Q', startX,            startY, scale, 255, 255, 255);
-  drawGlyph(pixels, 'N', startX + charW + gap, startY, scale, 255, 255, 255);
+  // ── NG badge ────────────────────────────────────────────
+  const ns=24, padX=28, padY=16;
+  const nw = textW('NG',ns);
+  const badgeW = nw + 2*padX, badgeH = 7*ns + 2*padY;
+  const bx = Math.floor((W - badgeW) / 2);
+  const by = 110 + 7*qs + 44 + 7*ss + 60;
+  fillRRect(c, bx, by, badgeW, badgeH, 16, 0x18,0x12,0x0C);
+  drawText(c, 'NG', bx+padX, by+padY, ns, 0xED,0xE0,0xC4);
 
-  return makePNG(W, H, (x, y) => pixels.get(x, y));
+  return buildPNG(W, H, (x,y) => c.get(x,y));
 }
 
-// ── Splash: 1284×2778, black bg (image not strictly needed — app.json color covers it)
+// ── Splash: 1024×1024, black bg, centred logo ─────────────────────────────────
 function makeSplash() {
-  const W = 512, H = 512;
-  return makePNG(W, H, () => [0x0A, 0x0A, 0x0A]);
+  const W=1024, H=1024;
+  const c = makeCanvas(W, H, [0x0A,0x0A,0x0A]);
+
+  // Gold "QuizStreet" + "NG" text centred on black
+  const qs=34;
+  const qx = Math.floor((W - textW('QUIZ',qs)) / 2);
+  const startY = Math.floor(H/2) - (7*qs + 30 + 7*20) / 2;
+  drawText(c, 'QUIZ', qx, startY, qs, 0xFF,0xD7,0x00);
+
+  const ss=22;
+  const sx = Math.floor((W - textW('STREET',ss)) / 2);
+  drawText(c, 'STREET', sx, startY + 7*qs + 24, ss, 0xFF,0xD7,0x00);
+
+  const ns=16, padX=20, padY=12;
+  const nw = textW('NG',ns);
+  const bW = nw + 2*padX, bH = 7*ns + 2*padY;
+  const bx = Math.floor((W - bW) / 2);
+  const by = startY + 7*qs + 24 + 7*ss + 36;
+  fillRRect(c, bx, by, bW, bH, 10, 0xFF,0xD7,0x00);
+  drawText(c, 'NG', bx+padX, by+padY, ns, 0x0A,0x0A,0x0A);
+
+  return buildPNG(W, H, (x,y) => c.get(x,y));
 }
 
-// ── Write files ───────────────────────────────────────────────────────────────
-const assetsDir = path.join(__dirname, '..', 'assets');
-if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir, { recursive: true });
-
-console.log('Generating assets/icon.png (1024×1024)…');
-fs.writeFileSync(path.join(assetsDir, 'icon.png'), makeIcon());
-console.log('Done: assets/icon.png');
-
-console.log('Generating assets/splash.png (512×512 black)…');
-fs.writeFileSync(path.join(assetsDir, 'splash.png'), makeSplash());
-console.log('Done: assets/splash.png');
-console.log('Assets generated. The splash background colour is set via app.json.');
+// ── Write ──────────────────────────────────────────────────────────────────────
+const out = path.join(__dirname, '..', 'assets');
+if (!fs.existsSync(out)) fs.mkdirSync(out, { recursive: true });
+console.log('Generating icon.png…');
+fs.writeFileSync(path.join(out,'icon.png'), makeIcon());
+console.log('Generating splash.png…');
+fs.writeFileSync(path.join(out,'splash.png'), makeSplash());
+console.log('Done.');
