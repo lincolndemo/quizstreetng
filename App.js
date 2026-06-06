@@ -4,18 +4,9 @@ import { StatusBar } from 'expo-status-bar';
 import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import { initDatabase, seedDatabase } from './lib/db';
+import HomeScreen from './screens/HomeScreen';
 
 const Stack = createStackNavigator();
-
-function PlaceholderScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>QuizStreet NG</Text>
-      <Text style={styles.subtitle}>Phase B — Database ready</Text>
-      <StatusBar style="light" />
-    </View>
-  );
-}
 
 function LoadingScreen() {
   return (
@@ -27,41 +18,44 @@ function LoadingScreen() {
   );
 }
 
+function ErrorScreen({ message }) {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.errorText}>DB Error: {message}</Text>
+      <StatusBar style="light" />
+    </View>
+  );
+}
+
+// Placeholder until Phase D
+function QuizScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.subtitle}>QuizScreen — Phase D</Text>
+      <StatusBar style="light" />
+    </View>
+  );
+}
+
 export default function App() {
   const [dbReady, setDbReady] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError]     = useState(null);
 
   useEffect(() => {
-    async function setupDatabase() {
-      try {
-        await initDatabase();
-        await seedDatabase();
-        setDbReady(true);
-      } catch (err) {
-        console.error('Database setup failed:', err);
-        setError(err.message);
-      }
-    }
-    setupDatabase();
+    initDatabase()
+      .then(() => seedDatabase())
+      .then(() => setDbReady(true))
+      .catch(err => setError(err.message));
   }, []);
 
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>DB Error: {error}</Text>
-        <StatusBar style="light" />
-      </View>
-    );
-  }
-
-  if (!dbReady) {
-    return <LoadingScreen />;
-  }
+  if (error)   return <ErrorScreen message={error} />;
+  if (!dbReady) return <LoadingScreen />;
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={PlaceholderScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Quiz" component={QuizScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -75,19 +69,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 12,
   },
-  title: {
-    color: '#00C853',
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    color: '#AAAAAA',
-    fontSize: 16,
-  },
-  errorText: {
-    color: '#FF5252',
-    fontSize: 14,
-    textAlign: 'center',
-    padding: 20,
-  },
+  subtitle:  { color: '#AAAAAA', fontSize: 16 },
+  errorText: { color: '#FF5252', fontSize: 14, textAlign: 'center', padding: 20 },
 });
