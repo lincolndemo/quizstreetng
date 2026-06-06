@@ -69,8 +69,20 @@ export default function HomeScreen({ navigation }) {
       >
         {/* ── Header ── */}
         <View style={styles.header}>
-          <Text style={styles.appTitle}>QuizStreet NG</Text>
-          <Text style={styles.appSub}>Set up your session</Text>
+          <View style={styles.headerRow}>
+            <View>
+              <Text style={styles.appTitle}>QuizStreet NG</Text>
+              <Text style={styles.appSub}>Set up your session</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.manageLink}
+              onPress={() => navigation.navigate('Manage')}
+              accessibilityRole="button"
+              accessibilityLabel="Manage questions"
+            >
+              <Text style={styles.manageLinkLabel}>Manage</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* ── Category ── */}
@@ -215,9 +227,12 @@ const styles = StyleSheet.create({
   scrollContent: { paddingHorizontal: 20, paddingBottom: 48 },
 
   // Header
-  header:   { paddingTop: 16, paddingBottom: 28 },
-  appTitle: { color: C.gold, fontSize: 34, fontWeight: '700', letterSpacing: 0.3 },
-  appSub:   { color: C.textSec, fontSize: 15, marginTop: 4 },
+  header:      { paddingTop: 16, paddingBottom: 28 },
+  headerRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
+  appTitle:    { color: C.gold, fontSize: 34, fontWeight: '700', letterSpacing: 0.3 },
+  appSub:      { color: C.textSec, fontSize: 15, marginTop: 4 },
+  manageLink:  { paddingBottom: 4 },
+  manageLinkLabel: { color: C.textSec, fontSize: 14, fontWeight: '500' },
 
   // Section label — SF Caption / ALL CAPS
   sectionLabel: {

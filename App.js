@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { initDatabase, seedDatabase } from './lib/db';
 import HomeScreen from './screens/HomeScreen';
 import QuizScreen from './screens/QuizScreen';
+import ManageScreen from './screens/ManageScreen';
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Quiz" component={QuizScreen} />
+        <Stack.Screen name="Manage" component={ManageScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
