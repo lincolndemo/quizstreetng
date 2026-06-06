@@ -22,15 +22,7 @@
       "expo-sqlite",
       "expo-sharing",
       "expo-system-ui",
-      "./plugins/withGradleOverrides",
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "kotlinVersion": "1.9.25"
-          }
-        }
-      ]
+      "./plugins/withGradleOverrides"
     ],
     "extra": {
       "eas": {
