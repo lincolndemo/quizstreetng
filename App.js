@@ -8,6 +8,7 @@ import HomeScreen from './screens/HomeScreen';
 import QuizScreen from './screens/QuizScreen';
 import ManageScreen from './screens/ManageScreen';
 import ImportScreen from './screens/ImportScreen';
+import StatsScreen from './screens/StatsScreen';
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,7 @@ export default function App() {
         <Stack.Screen name="Quiz" component={QuizScreen} />
         <Stack.Screen name="Manage" component={ManageScreen} />
         <Stack.Screen name="Import" component={ImportScreen} />
+        <Stack.Screen name="Stats" component={StatsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
