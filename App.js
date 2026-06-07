@@ -1,3 +1,4 @@
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -86,25 +87,27 @@ export default function App() {
   if (!dbReady) return <LoadingScreen />;
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          gestureEnabled: true,
-        }}
-      >
-        <Stack.Screen name="Main" component={TabNavigator} />
-        <Stack.Screen
-          name="Quiz"
-          component={QuizScreen}
-          options={{
-            presentation: 'modal',
-            cardStyleInterpolator: CardStyleInterpolators.forModalPresentationIOS,
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            gestureEnabled: true,
           }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+        >
+          <Stack.Screen name="Main" component={TabNavigator} />
+          <Stack.Screen
+            name="Quiz"
+            component={QuizScreen}
+            options={{
+              presentation: 'modal',
+              cardStyleInterpolator: CardStyleInterpolators.forModalPresentationIOS,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 
