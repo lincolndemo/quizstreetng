@@ -21,7 +21,9 @@
     "plugins": [
       "expo-sqlite",
       "expo-sharing",
-      "expo-system-ui"
+      "expo-system-ui",
+      "expo-document-picker",
+      "expo-file-system"
     ],
     "extra": {
       "eas": {
