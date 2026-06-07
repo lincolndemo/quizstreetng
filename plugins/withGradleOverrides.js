@@ -10,9 +10,7 @@ module.exports = function withGradleOverrides(config) {
         c.modResults.push({ type: 'property', key, value });
       }
     };
-    // Disable New Architecture — avoids native compilation issues on EAS free tier
-    set('newArchEnabled', 'false');
-    // Disable edge-to-edge — requires react-native-edge-to-edge which isn't installed
+    // Keep edge-to-edge off to avoid layout issues with system bars in the quiz UI
     set('edgeToEdgeEnabled', 'false');
     return c;
   });
