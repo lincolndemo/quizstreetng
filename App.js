@@ -1,3 +1,4 @@
+import { Component, useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -5,7 +6,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { CardStyleInterpolators } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
-import { useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { initDatabase, seedDatabase } from './lib/db';
 import HomeScreen   from './screens/HomeScreen';
@@ -15,6 +15,22 @@ import ImportScreen from './screens/ImportScreen';
 import StatsScreen  from './screens/StatsScreen';
 
 const C = { bg: '#0A0A0A', border: '#2C2C2E', primary: '#00C853', textSec: '#8E8E93' };
+
+class ErrorBoundary extends Component {
+  state = { error: null };
+  static getDerivedStateFromError(e) { return { error: e }; }
+  render() {
+    if (this.state.error) {
+      return (
+        <View style={{ flex: 1, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <Text style={{ color: '#FF3B30', fontSize: 16, fontWeight: '700', marginBottom: 12 }}>App Error</Text>
+          <Text style={{ color: '#8E8E93', fontSize: 13, textAlign: 'center' }}>{this.state.error.message}</Text>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const Stack = createStackNavigator();
 const Tab   = createBottomTabNavigator();
@@ -87,27 +103,29 @@ export default function App() {
   if (!dbReady) return <LoadingScreen />;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-            gestureEnabled: true,
-          }}
-        >
-          <Stack.Screen name="Main" component={TabNavigator} />
-          <Stack.Screen
-            name="Quiz"
-            component={QuizScreen}
-            options={{
-              presentation: 'modal',
-              cardStyleInterpolator: CardStyleInterpolators.forModalPresentationIOS,
+    <ErrorBoundary>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+              cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+              gestureEnabled: true,
             }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </GestureHandlerRootView>
+          >
+            <Stack.Screen name="Main" component={TabNavigator} />
+            <Stack.Screen
+              name="Quiz"
+              component={QuizScreen}
+              options={{
+                presentation: 'modal',
+                cardStyleInterpolator: CardStyleInterpolators.forModalPresentationIOS,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </GestureHandlerRootView>
+    </ErrorBoundary>
   );
 }
 
