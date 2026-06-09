@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { getAllQuestions, deleteQuestion } from '../lib/db';
 import AddEditModal from '../components/AddEditModal';
+import { C } from '../lib/theme';
 
 const CATS = [
   'All', 'Ogun State Challenge', 'Nigeria Challenge', 'Sports Challenge',
@@ -17,13 +18,7 @@ const DIFFS = [
   { label: 'Medium', value: 'Medium' },
   { label: 'Hard', value: 'Hard' },
 ];
-const DIFF_COLOR = { Easy: '#00C853', Medium: '#FF9500', Hard: '#FF3B30' };
-
-const C = {
-  bg: '#0A0A0A', surface: '#1A1A1A', surfaceSel: '#0A2A15',
-  primary: '#00C853', gold: '#FFD700', text: '#FFFFFF',
-  textSec: '#8E8E93', border: '#2C2C2E', danger: '#FF3B30',
-};
+const DIFF_COLOR = { Easy: C.primary, Medium: '#FF9500', Hard: C.danger };
 
 export default function ManageScreen({ navigation }) {
   const [questions, setQuestions] = useState([]);
@@ -118,7 +113,7 @@ export default function ManageScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={C.bg} />
+      <StatusBar barStyle="dark-content" backgroundColor={C.bg} />
 
       <View style={styles.header}>
         <Text style={styles.title}>Questions</Text>
@@ -159,18 +154,18 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: 20, paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.border,
+    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.borderLight,
   },
-  title:    { color: C.text, fontSize: 17, fontWeight: '700' },
+  title:    { color: C.textDark, fontSize: 17, fontWeight: '700' },
   headerActions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   importLink:    { paddingHorizontal: 4 },
-  importLinkLabel: { color: C.textSec, fontSize: 14, fontWeight: '500' },
+  importLinkLabel: { color: C.textSecDark, fontSize: 14, fontWeight: '500' },
   addBtn:   { backgroundColor: C.gold, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 7 },
   addBtnLabel: { color: '#0A0A0A', fontSize: 14, fontWeight: '700' },
   listContent: { paddingBottom: 40 },
   listHeader:  { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 8 },
   sectionLabel: {
-    color: C.textSec, fontSize: 12, fontWeight: '600',
+    color: C.textSecDark, fontSize: 12, fontWeight: '600',
     letterSpacing: 1.5, marginBottom: 10, marginTop: 4,
   },
   chipScroll: { marginBottom: 20 },
@@ -186,14 +181,14 @@ const styles = StyleSheet.create({
   diffBtnSel: { backgroundColor: C.surfaceSel, borderColor: C.primary },
   diffLabel:  { color: C.textSec, fontSize: 13, fontWeight: '600' },
   diffLabelSel: { color: C.primary },
-  countLine:  { color: C.textSec, fontSize: 13, marginBottom: 8 },
+  countLine:  { color: C.textSecDark, fontSize: 13, marginBottom: 8 },
   row:     { paddingHorizontal: 20, paddingVertical: 14 },
   badges:  { flexDirection: 'row', gap: 8, marginBottom: 4 },
   diffBadge: { fontSize: 11, fontWeight: '700', letterSpacing: 0.8 },
-  typeBadge: { color: C.textSec, fontSize: 11, fontWeight: '600', letterSpacing: 0.8 },
+  typeBadge: { color: C.textSecDark, fontSize: 11, fontWeight: '600', letterSpacing: 0.8 },
   usedBadge: { color: '#FF9500', fontSize: 11, fontWeight: '600', letterSpacing: 0.8 },
-  catText:  { color: C.textSec, fontSize: 12, marginBottom: 4 },
-  preview:  { color: C.text, fontSize: 15, fontWeight: '500', lineHeight: 21 },
-  sep:      { height: StyleSheet.hairlineWidth, backgroundColor: C.border, marginLeft: 20 },
-  empty:    { color: C.textSec, textAlign: 'center', marginTop: 48, fontSize: 15 },
+  catText:  { color: C.textSecDark, fontSize: 12, marginBottom: 4 },
+  preview:  { color: C.textDark, fontSize: 15, fontWeight: '500', lineHeight: 21 },
+  sep:      { height: StyleSheet.hairlineWidth, backgroundColor: C.borderLight, marginLeft: 20 },
+  empty:    { color: C.textSecDark, textAlign: 'center', marginTop: 48, fontSize: 15 },
 });

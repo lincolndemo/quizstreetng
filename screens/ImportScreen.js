@@ -4,6 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { importQuestions } from '../lib/db';
+import { C } from '../lib/theme';
 
 const VALID_CATS  = new Set(['Ogun State Challenge','Nigeria Challenge','Sports Challenge',
   'Music Challenge','Student Challenge','Geography Challenge','Bible Challenge','AI & Technology']);
@@ -13,9 +14,6 @@ const HEADERS = 'category,difficulty,type,question,answer,option_a,option_b,opti
 const TEMPLATE = HEADERS + '\n' +
   'Nigeria Challenge,Easy,fitg,What is the capital of Nigeria?,Abuja,,,,, ₦500\n' +
   'Sports Challenge,Medium,mcq,Who won the 2018 FIFA World Cup?,France,France,Brazil,Germany,Argentina,₦1000\n';
-
-const C = { bg:'#0A0A0A', surface:'#1A1A1A', surfaceSel:'#0A2A15', primary:'#00C853',
-  gold:'#FFD700', text:'#FFFFFF', textSec:'#8E8E93', border:'#2C2C2E', danger:'#FF3B30' };
 
 function parseCSVLine(line) {
   const fields = []; let cur = ''; let inQ = false;
@@ -94,7 +92,7 @@ export default function ImportScreen() {
 
   return (
     <SafeAreaView style={s.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={C.bg} />
+      <StatusBar barStyle="dark-content" backgroundColor={C.bg} />
       <View style={s.header}>
         <Text style={s.title}>Import Questions</Text>
       </View>
@@ -179,9 +177,9 @@ const s = StyleSheet.create({
   safe:   { flex: 1, backgroundColor: C.bg },
   header: { flexDirection:'row', alignItems:'center', justifyContent:'space-between',
     paddingHorizontal:20, paddingVertical:14,
-    borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:C.border },
+    borderBottomWidth:StyleSheet.hairlineWidth, borderBottomColor:C.borderLight },
   back:  { color:C.primary, fontSize:17 },
-  title: { color:C.text, fontSize:17, fontWeight:'700' },
+  title: { color:C.textDark, fontSize:17, fontWeight:'700' },
   scroll: { paddingHorizontal:20, paddingBottom:48 },
   card:  { backgroundColor:C.surface, borderRadius:12, borderWidth:1, borderColor:C.border, padding:16, marginTop:24 },
   cardTitle: { color:C.textSec, fontSize:12, fontWeight:'600', letterSpacing:1.5, marginBottom:10 },
@@ -195,7 +193,7 @@ const s = StyleSheet.create({
   successBox: { marginTop:20, backgroundColor:C.surfaceSel, borderWidth:1, borderColor:C.primary,
     borderRadius:12, padding:16 },
   successText: { color:C.primary, fontSize:16, fontWeight:'600', textAlign:'center' },
-  sectionLabel: { color:C.textSec, fontSize:12, fontWeight:'600', letterSpacing:1.5, marginTop:28, marginBottom:12 },
+  sectionLabel: { color:C.textSecDark, fontSize:12, fontWeight:'600', letterSpacing:1.5, marginTop:28, marginBottom:12 },
   previewRow: { backgroundColor:C.surface, borderRadius:10, padding:14, marginBottom:8,
     borderWidth:1, borderColor:C.border },
   rowBadges: { flexDirection:'row', gap:8, marginBottom:6 },
@@ -204,12 +202,12 @@ const s = StyleSheet.create({
   typeBadge: { color:C.textSec, fontSize:11, fontWeight:'600' },
   previewQ:  { color:C.text, fontSize:14, fontWeight:'500', lineHeight:20 },
   previewA:  { color:C.primary, fontSize:13, marginTop:4 },
-  moreText:  { color:C.textSec, fontSize:13, textAlign:'center', paddingVertical:8 },
+  moreText:  { color:C.textSecDark, fontSize:13, textAlign:'center', paddingVertical:8 },
   errBox:  { backgroundColor:'#1A0505', borderWidth:1, borderColor:C.danger, borderRadius:10,
     padding:14, marginBottom:12 },
   errTitle: { color:C.danger, fontSize:13, fontWeight:'700', marginBottom:6 },
   errLine:  { color:'#FF8A80', fontSize:12, lineHeight:18 },
   importBtn: { backgroundColor:C.primary, borderRadius:12, paddingVertical:18, alignItems:'center', marginTop:8 },
   importBtnOff: { backgroundColor:C.surface, borderWidth:1, borderColor:C.border },
-  importBtnLabel: { color:C.bg, fontSize:17, fontWeight:'700' },
+  importBtnLabel: { color:C.textDark, fontSize:17, fontWeight:'700' },
 });

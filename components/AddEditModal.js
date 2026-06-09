@@ -4,6 +4,7 @@ import {
   TouchableOpacity, StyleSheet, Alert,
 } from 'react-native';
 import { addQuestion, updateQuestion } from '../lib/db';
+import { C } from '../lib/theme';
 
 const CATS = [
   'Ogun State Challenge', 'Nigeria Challenge', 'Sports Challenge',
@@ -12,12 +13,6 @@ const CATS = [
 ];
 const DIFFS  = ['Easy', 'Medium', 'Hard'];
 const PRIZES = { Easy: '₦500', Medium: '₦1,000', Hard: '₦2,000' };
-
-const C = {
-  bg: '#0A0A0A', surface: '#1A1A1A', surfaceSel: '#0A2A15',
-  primary: '#00C853', gold: '#FFD700', text: '#FFFFFF',
-  textSec: '#8E8E93', border: '#2C2C2E',
-};
 
 function Field({ label, children }) {
   return (
@@ -161,7 +156,7 @@ export default function AddEditModal({ visible, question, onClose, onSaved }) {
 }
 
 const s = StyleSheet.create({
-  root:    { flex: 1, backgroundColor: C.bg },
+  root:    { flex: 1, backgroundColor: C.surface },
   mHeader: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingHorizontal: 20, paddingVertical: 16,

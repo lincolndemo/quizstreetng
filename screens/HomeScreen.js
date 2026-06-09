@@ -4,6 +4,7 @@ import {
   SafeAreaView, StatusBar, ActivityIndicator,
 } from 'react-native';
 import { getQuestions } from '../lib/db';
+import { C } from '../lib/theme';
 
 const CATEGORIES = [
   'Ogun State Challenge',
@@ -61,7 +62,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={C.bg} />
+      <StatusBar barStyle="dark-content" backgroundColor={C.bg} />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -197,18 +198,6 @@ function CategoryCard({ label, prize, selected, onPress }) {
   );
 }
 
-// ── Design tokens ──────────────────────────────────────────────────────────
-const C = {
-  bg:          '#0A0A0A',
-  surface:     '#1A1A1A',
-  surfaceSel:  '#0A2A15',  // deep green tint — SF dark-selected idiom
-  primary:     '#00C853',
-  gold:        '#FFD700',
-  text:        '#FFFFFF',
-  textSec:     '#8E8E93',  // iOS system secondary label
-  border:      '#2C2C2E',  // iOS system separator
-  borderSel:   '#00C853',
-};
 
 const styles = StyleSheet.create({
   safe:         { flex: 1, backgroundColor: C.bg },
@@ -216,12 +205,12 @@ const styles = StyleSheet.create({
 
   // Header
   header:   { paddingTop: 16, paddingBottom: 28 },
-  appTitle: { color: C.gold, fontSize: 34, fontWeight: '700', letterSpacing: 0.3 },
-  appSub:   { color: C.textSec, fontSize: 15, marginTop: 4 },
+  appTitle: { color: C.textDark, fontSize: 34, fontWeight: '700', letterSpacing: 0.3 },
+  appSub:   { color: C.textSecDark, fontSize: 15, marginTop: 4 },
 
   // Section label — SF Caption / ALL CAPS
   sectionLabel: {
-    color: C.textSec,
+    color: C.textSecDark,
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 1.5,
@@ -246,7 +235,7 @@ const styles = StyleSheet.create({
     minHeight: 76,
     justifyContent: 'space-between',
   },
-  cardSel:      { backgroundColor: C.surfaceSel, borderColor: C.borderSel },
+  cardSel:      { backgroundColor: C.surfaceSel, borderColor: C.primary },
   cardName:     { color: C.text, fontSize: 14, fontWeight: '600', lineHeight: 20 },
   cardNameSel:  { color: C.primary },
   cardPrize:    { color: C.gold, fontSize: 12, fontWeight: '600', marginTop: 6 },
@@ -267,7 +256,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  segBtnSel:   { backgroundColor: C.surfaceSel, borderColor: C.borderSel },
+  segBtnSel:   { backgroundColor: C.surfaceSel, borderColor: C.primary },
   segLabel:    { color: C.text, fontSize: 15, fontWeight: '600' },
   segLabelSel: { color: C.primary },
 
@@ -286,21 +275,21 @@ const styles = StyleSheet.create({
     borderColor: C.border,
     alignItems: 'center',
   },
-  diffBtnSel:   { backgroundColor: C.surfaceSel, borderColor: C.borderSel },
+  diffBtnSel:   { backgroundColor: C.surfaceSel, borderColor: C.primary },
   diffName:     { color: C.text, fontSize: 13, fontWeight: '600' },
   diffNameSel:  { color: C.primary },
   diffPrize:    { color: C.textSec, fontSize: 11, fontWeight: '500', marginTop: 3 },
   diffPrizeSel: { color: C.gold },
 
-  // Count display
+  // Count display — dark card so the lime number reads cleanly
   countBox: {
     alignItems: 'center',
     paddingVertical: 28,
     marginBottom: 24,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: C.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: C.border,
+    backgroundColor: C.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: C.border,
   },
   countNum:     { color: C.primary, fontSize: 52, fontWeight: '700', lineHeight: 60 },
   countCaption: { color: C.textSec, fontSize: 14, marginTop: 4 },

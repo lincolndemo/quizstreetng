@@ -4,13 +4,7 @@ import {
   SafeAreaView, StatusBar, Alert, ActivityIndicator,
 } from 'react-native';
 import { getStatsByCategory, resetCategoryUsed } from '../lib/db';
-
-const C = {
-  bg: '#0A0A0A', surface: '#1A1A1A', surfaceSel: '#0A2A15',
-  primary: '#00C853', gold: '#FFD700', text: '#FFFFFF',
-  textSec: '#8E8E93', border: '#2C2C2E', danger: '#FF3B30',
-  track: '#2C2C2E',
-};
+import { C } from '../lib/theme';
 
 function ProgressBar({ used, total }) {
   const pct = total > 0 ? Math.min((used / total) * 100, 100) : 0;
@@ -98,7 +92,7 @@ export default function StatsScreen() {
 
   return (
     <SafeAreaView style={s.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={C.bg} />
+      <StatusBar barStyle="dark-content" backgroundColor={C.bg} />
 
       <View style={s.header}>
         <Text style={s.title}>Question Bank Stats</Text>
@@ -145,10 +139,10 @@ const s = StyleSheet.create({
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: 20, paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.border,
+    borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: C.borderLight,
   },
   back:   { color: C.primary, fontSize: 17 },
-  title:  { color: C.text, fontSize: 17, fontWeight: '700' },
+  title:  { color: C.textDark, fontSize: 17, fontWeight: '700' },
   scroll: { paddingHorizontal: 20, paddingBottom: 48, paddingTop: 16 },
 
   card: {

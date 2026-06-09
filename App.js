@@ -8,13 +8,12 @@ import { StatusBar } from 'expo-status-bar';
 import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { initDatabase, seedDatabase } from './lib/db';
+import { C } from './lib/theme';
 import HomeScreen   from './screens/HomeScreen';
 import QuizScreen   from './screens/QuizScreen';
 import ManageScreen from './screens/ManageScreen';
 import ImportScreen from './screens/ImportScreen';
 import StatsScreen  from './screens/StatsScreen';
-
-const C = { bg: '#0A0A0A', border: '#2C2C2E', primary: '#00C853', textSec: '#8E8E93' };
 
 class ErrorBoundary extends Component {
   state = { error: null };
@@ -24,7 +23,7 @@ class ErrorBoundary extends Component {
       return (
         <View style={{ flex: 1, backgroundColor: C.bg, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
           <Text style={{ color: '#FF3B30', fontSize: 16, fontWeight: '700', marginBottom: 12 }}>App Error</Text>
-          <Text style={{ color: '#8E8E93', fontSize: 13, textAlign: 'center' }}>{this.state.error.message}</Text>
+          <Text style={{ color: C.textSecDark, fontSize: 13, textAlign: 'center' }}>{this.state.error.message}</Text>
         </View>
       );
     }
@@ -52,10 +51,10 @@ function TabNavigator() {
           return <Ionicons name={focused ? on : off} size={size} color={color} />;
         },
         tabBarActiveTintColor:   C.primary,
-        tabBarInactiveTintColor: C.textSec,
+        tabBarInactiveTintColor: C.textSecDark,
         tabBarStyle: {
           backgroundColor: C.bg,
-          borderTopColor:  C.border,
+          borderTopColor:  C.borderLight,
           borderTopWidth:  StyleSheet.hairlineWidth,
         },
         tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
